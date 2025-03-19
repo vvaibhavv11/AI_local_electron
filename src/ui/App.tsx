@@ -74,11 +74,18 @@ function App() {
         // @ts-ignore
         await window.backend.aiResponseStream((res: string) => {
             fullResponse += res;
-            setMessages(prev => prev.map(msg =>
-                msg.id === aiMessageId
-                    ? { ...msg, content: fullResponse, isLoading: false }
-                    : msg
-            ));
+            setMessages(prev => {
+                // Create a copy of the array without the last message
+                const newMessages = prev.slice(0, -1);
+
+                // Add a new message with the updated content
+                return [...newMessages, {
+                    id: aiMessageId,
+                    content: fullResponse,
+                    type: MessageType.AI,
+                    isLoading: false
+                }];
+            });
         });
     };
 
