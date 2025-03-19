@@ -1,7 +1,10 @@
-import { dialog, OpenDialogOptions } from "electron";
+import { dialog } from "electron";
 
 export async function openFile() {
-    const dialogOption: OpenDialogOptions = {
+    /**
+    * @type {import('electron').OpenDialogOptions}
+    */
+    const dialogOption = {
         title: "select the model gguf",
         filters: [{
             name: "gguf",

@@ -5,18 +5,18 @@
   "author": "vaibhav sharma <vvaibhavv3434@skiff.com>",
   "homepage": "",
   "type": "module",
-  "main": "dist-electron/main.js",
+  "main": "src/electron/src/main.js",
   "scripts": {
     "dev:react": "bunx --bun vite",
-    "dev:electron": "pnpm transpile:electron; cross-env NODE_ENV=development electron .",
+    "dev:electron": "pnpm cross-env NODE_ENV=development electron .",
     "dev": "npm-run-all --parallel dev:react dev:electron",
     "build": "bunx --bun vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "transpile:electron": "tsc --project src/electron/tsconfig.json",
     "dist:mac": "pnpm run transpile:electron && pnpm run build && electron-builder --mac --arm64",
-    "dist:win": "pnpm run transpile:electron && pnpm run build && electron-builder --win --x64",
-    "dist:linux": "pnpm run transpile:electron && pnpm run build && electron-builder --linux --x64"
+    "dist:win": "pnpm run build && electron-builder --win --x64",
+    "dist:linux": "pnpm run build && electron-builder --linux --x64"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.12",
@@ -37,7 +37,7 @@
     "@types/react-syntax-highlighter": "^15.5.13",
     "@vitejs/plugin-react": "^4.3.4",
     "cross-env": "^7.0.3",
-    "electron": "^35.0.0",
+    "electron": "^35.0.2",
     "electron-builder": "^25.1.8",
     "eslint": "^9.21.0",
     "eslint-plugin-react-hooks": "^5.1.0",
@@ -51,17 +51,9 @@
   "build": {
     "appId": "com.AILocal.noob",
     "files": [
-      "dist-electron",
-      "dist-react",
-      "!node_modules/node-llama-cpp/bins/**/*",
-      "node_modules/node-llama-cpp/bins/${os}-${arch}*/**/*",
-      "!node_modules/node-llama-cpp/llama/localBuilds/**/*",
-      "node_modules/node-llama-cpp/llama/localBuilds/${os}-${arch}*/**/*",
-      "!node_modules/@node-llama-cpp/*/bins/**/*",
-      "node_modules/@node-llama-cpp/${os}-${arch}*/bins/**/*"
-    ],
-    "extraResources": [
-      "./dist-electron/preload.cjs"
+      "./dist-react",
+      "./src/electron/src",
+      "./node_modules"
     ],
     "icon": "./2890573_ai_artificial intelligence_automaton_brain_electronics_icon.png",
     "mac": {
@@ -78,6 +70,15 @@
         "portable",
         "msi"
       ]
+    }
+  },
+  "trustedDependencies": [
+    "node-llama-cpp"
+  ],
+  "pnpm": {
+    "patchedDependencies": {
+      "chalk@5.4.1": "patches/chalk@5.4.1.patch",
+      "universal-github-app-jwt": "patches/universal-github-app-jwt.patch"
     }
   }
 }

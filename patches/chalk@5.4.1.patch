@@ -1,0 +1,33 @@
+diff --git a/package.json b/package.json
+index 23b4ce33dc6677d5a21c9f7e76ab3803d1402344..298913cdc580b840b18914a035fd7b47e94487c2 100644
+--- a/package.json
++++ b/package.json
+@@ -8,13 +8,6 @@
+ 	"type": "module",
+ 	"main": "./source/index.js",
+ 	"exports": "./source/index.js",
+-	"imports": {
+-		"#ansi-styles": "./source/vendor/ansi-styles/index.js",
+-		"#supports-color": {
+-			"node": "./source/vendor/supports-color/index.js",
+-			"default": "./source/vendor/supports-color/browser.js"
+-		}
+-	},
+ 	"types": "./source/index.d.ts",
+ 	"sideEffects": false,
+ 	"engines": {
+diff --git a/source/index.js b/source/index.js
+index 8bc993da5d6229aff2851fa01996e6164e90e10c..7e497e515ddfcbf3b874302db8fc2a3a11ff1875 100644
+--- a/source/index.js
++++ b/source/index.js
+@@ -1,5 +1,8 @@
+-import ansiStyles from '#ansi-styles';
+-import supportsColor from '#supports-color';
++const isRenderer = process.type === 'renderer';
++import ansiStyles from './vendor/ansi-styles/index.js';
++const supportsColor = isRenderer 
++    ? await import('./vendor/supports-color/browser.js')
++    : await import('./vendor/supports-color/index.js');
+ import { // eslint-disable-line import/order
+ 	stringReplaceAll,
+ 	stringEncaseCRLFWithFirstIndex,

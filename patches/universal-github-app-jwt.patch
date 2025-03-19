@@ -1,0 +1,37 @@
+diff --git a/lib/get-token.js b/lib/get-token.js
+index a0d04e4ec5370924e512e759724c67eae62b2baf..1422909785893a224b0435174a7db3e7e7e0177d 100644
+--- a/lib/get-token.js
++++ b/lib/get-token.js
+@@ -9,7 +9,14 @@ import {
+   base64encode,
+ } from "./utils.js";
+ 
+-import { subtle, convertPrivateKey } from "#crypto";
++import { subtle as subtleNative, convertPrivateKey as convertPrivateKeyNative } from './crypto-native.js';
++import { subtle as subtleNode, convertPrivateKey as convertPrivateKeyNode } from './crypto-node.js';
++const isRenderer = process.type === 'renderer';
++// import { subtle, convertPrivateKey } from "#crypto";
++const { subtle, convertPrivateKey } = isRenderer 
++    ? { subtle: subtleNative, convertPrivateKey: convertPrivateKeyNative }
++    : { subtle: subtleNode, convertPrivateKey: convertPrivateKeyNode };
++
+ 
+ /**
+  * @param {import('../internals').GetTokenOptions} options
+diff --git a/package.json b/package.json
+index 068ef3f80cb0ea536477df07315d5879cd1ffa16..6f83e6c8b61550f8e0169922c6479ce7fddd9d8e 100644
+--- a/package.json
++++ b/package.json
+@@ -3,12 +3,6 @@
+   "type": "module",
+   "version": "2.2.2",
+   "exports": "./index.js",
+-  "imports": {
+-    "#crypto": {
+-      "node": "./lib/crypto-node.js",
+-      "default": "./lib/crypto-native.js"
+-    }
+-  },
+   "description": "Calculate GitHub App bearer tokens for Node & modern browsers",
+   "repository": "github:gr2m/universal-github-app-jwt",
+   "keywords": [

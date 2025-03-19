@@ -1,12 +1,44 @@
 {
   "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
     "strict": true,
-    "target": "ESNext",
-    "module": "NodeNext",
-    "outDir": "../../dist-electron",
-    "skipLibCheck": true
+    "outDir": "./dist-electron",
+    "rootDir": "./",
+    "allowJs": true,
+    "checkJs": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+        "./*"
+      ]
+    },
+    "jsx": "preserve",
+    "noEmit": true,
+    "maxNodeModuleJsDepth": 1,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "types": [
+      "node"
+    ],
+    "lib": [
+      "ESNext",
+      "DOM"
+    ]
   },
   "include": [
-    "./"
+    "./src/**/*.js",
+    "./src/**/*.jsx",
+    "./src/**/*.ts",
+    "./src/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist-electron"
   ]
 }
