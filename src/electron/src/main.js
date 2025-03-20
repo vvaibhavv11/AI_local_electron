@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, Menu } from 'electron';
 import path from 'path';
 import { isDev } from './util.js';
 import { getPreloadPath } from './pathResolver.js';
@@ -10,7 +10,8 @@ import { loadModel, response } from './llamacpp/model.js';
 app.on("ready", () => {
     const mainWindow = new BrowserWindow({
         webPreferences: {
-            preload: getPreloadPath()
+            preload: getPreloadPath(),
+            contextIsolation: true
         }
     });
 
@@ -35,6 +36,7 @@ app.on("ready", () => {
     if (isDev()) {
         mainWindow.loadURL("http://localhost:5500");
     } else {
+        Menu.setApplicationMenu(null);
         mainWindow.loadFile(path.join(app.getAppPath(), "/dist-react/index.html"));
     }
 });
