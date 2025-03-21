@@ -1,26 +1,15 @@
-
-import Markdown from "react-markdown";
+import { ModelSegmentType } from "../../types/index";
+import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { useEffect, useState } from "react";
 
 type AIMessageProps = {
     content: string;
-    isLoading?: boolean;
+    isLoading: boolean;
+    segmentType: ModelSegmentType;
 }
 
-export const AIMessage = ({ content, isLoading }: AIMessageProps) => {
-    const [loadingDots, setLoadingDots] = useState('▋');
-
-    useEffect(() => {
-        if (isLoading) {
-            const interval = setInterval(() => {
-                setLoadingDots(prev => prev === '▋' ? '▋▋' : '▋');
-            }, 500);
-            return () => clearInterval(interval);
-        }
-    }, [isLoading]);
-
+export const AIMessage = ({ content, isLoading, segmentType }: AIMessageProps) => {
     const components = {
         code({ className, children, ...props }: any) {
             const match = /language-(\w+)/.exec(className || '');
@@ -32,8 +21,7 @@ export const AIMessage = ({ content, isLoading }: AIMessageProps) => {
                         <div className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity">
                             <button
                                 onClick={() => navigator.clipboard.writeText(code)}
-                                className="bg-[#4A3535] hover:bg-[#5A4545] text-[#D4A6A6]
-                                         rounded px-2 py-1 text-xs transition-colors"
+                                className="bg-[#4A3535] hover:bg-[#5A4545] text-[#D4A6A6] rounded px-2 py-1 text-xs transition-colors"
                             >
                                 Copy
                             </button>
@@ -54,14 +42,7 @@ export const AIMessage = ({ content, isLoading }: AIMessageProps) => {
                     </div>
                 );
             }
-            return (
-                <code
-                    className="bg-[#2A1515] px-1.5 py-0.5 rounded font-mono text-[#D4A6A6]"
-                    {...props}
-                >
-                    {children}
-                </code>
-            );
+            return <code className="bg-[#2A1515] px-1.5 py-0.5 rounded font-mono text-[#D4A6A6]" {...props}>{children}</code>;
         },
         p({ children }: any) {
             return <p className="mb-4 last:mb-0">{children}</p>
@@ -88,16 +69,10 @@ export const AIMessage = ({ content, isLoading }: AIMessageProps) => {
 
     return (
         <div className="flex justify-start mb-4">
-            <div className="bg-[#3A2525] text-[#D4A6A6] rounded-2xl rounded-tl-none px-6 py-4 max-w-[80%]">
-                <div className="text-sm">
-                    {isLoading ? (
-                        <span className="animate-pulse">{loadingDots}</span>
-                    ) : (
-                        <Markdown components={components}>
-                            {content}
-                        </Markdown>
-                    )}
-                </div>
+            <div className="bg-[#2A1515] text-[#D4A6A6] rounded-2xl rounded-tl-none px-6 py-4 max-w-[80%]">
+                <ReactMarkdown components={components}>
+                    {content}
+                </ReactMarkdown>
             </div>
         </div>
     );

@@ -49,9 +49,9 @@ export const response = async (window, userPrompt) => {
 
     return state.session.prompt(userPrompt, {
         /**
-        * @param {string} chunk
+        * @param {import("node-llama-cpp").LlamaChatResponseChunk} chunk
         */
-        onTextChunk: (chunk) => {
+        onResponseChunk: (chunk) => {
             window.webContents.send("aiResponseStream", chunk)
         }
     });

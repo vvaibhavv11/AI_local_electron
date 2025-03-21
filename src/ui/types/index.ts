@@ -5,11 +5,27 @@ export const MessageType = {
 
 export type MessageType = typeof MessageType[keyof typeof MessageType];
 
+export type Token = number & {
+    __token: never;
+};
+
+export type ModelSegmentType = "thought" | undefined;
+
+export type ModelResponseChunk = {
+    type: "segment" | undefined;
+    segmentType: ModelSegmentType;
+    text: string;
+    tokens: Token[];
+    segmentStartTime?: Date;
+    segmentEndTime?: Date;
+};
+
 export type Message = {
     id: string;
     content: string;
     type: MessageType;
-    isLoading: boolean
+    isLoading: boolean;
+    segmentType: ModelSegmentType;
 }
 
 export type aiResponse = {

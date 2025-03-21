@@ -7,7 +7,7 @@ import { InputForm } from './components/InputForm';
 import { Footer } from './components/Footer';
 import { Toast } from './components/Toast';
 import { MessageList } from './components/messages/MessageList';
-import { Message, MessageType } from './types';
+import { Message, MessageType, ModelResponseChunk, ModelSegmentType } from './types';
 import { v4 as uuidv4 } from 'uuid';
 // import { dialog } from "electron";
 scan({
@@ -19,14 +19,17 @@ function App() {
     const [showToast, setShowToast] = useState<boolean>(false);
     const [messages, setMessages] = useState<Message[]>([]);
 
-    const openFileSelector = async () => {
-        // @ts-ignore
-        const isLoaded = await window.backend.loadModel();
-        console.log(isLoaded);
-        if (isLoaded) {
-            setModelLoaded(true);
-            setShowToast(true);
-            setTimeout(() => setShowToast(false), 3000);
+    const handleModelLoad = async () => {
+        try {
+            // @ts-ignore
+            const done = await window.backend.loadModel();
+            setModelLoaded(done);
+            if (done) {
+                setShowToast(true);
+                setTimeout(() => setShowToast(false), 3000);
+            }
+        } catch (error) {
+            console.error("Error loading model:", error);
         }
     };
 
@@ -35,57 +38,94 @@ function App() {
     };
 
     const formatMessagesForContext = (messages: Message[]): string => {
-        return messages.map(msg =>
-            `<|im_start|>${msg.type === 'user' ? 'user' : 'assistant'}\n${msg.content}<|im_end|>\n`
-        ).join('');
+        return messages
+            .filter(msg => !msg.segmentType) // Only include non-thought messages
+            .map(msg => {
+                const role = msg.type === MessageType.USER ? "user" : "assistant";
+                return `<|im_start|>${role}\n${msg.content}<|im_end|>\n`;
+            })
+            .join("");
     };
 
     const handleSubmit = async (content: string) => {
         const userMessage: Message = {
             id: uuidv4(),
             content,
-            type: "user",
+            type: MessageType.USER,
             isLoading: false,
+            segmentType: undefined
         };
 
         setMessages(prev => [...prev, userMessage]);
 
-        // Create initial AI message with loading state
         const aiMessageId = uuidv4();
         const aiMessage: Message = {
             id: aiMessageId,
-            content: '▋', // Using a block character as typing indicator
+            content: '',
             type: MessageType.AI,
-            isLoading: true // Add this to Message type
+            isLoading: true,
+            segmentType: undefined
         };
 
         setMessages(prev => [...prev, aiMessage]);
 
-        // Format previous context with the new format
         const conversationHistory = formatMessagesForContext(messages);
         const fullPrompt = `${conversationHistory}<|im_start|>user\n${content}<|im_end|>\n<|im_start|>assistant\n`;
 
         // @ts-ignore
         await window.backend.aiResponse(fullPrompt);
 
-        //     const onEvent = new Channel<aiResponse>();
-        let fullResponse = '';
-        //
-        // @ts-ignore
-        await window.backend.aiResponseStream((res: string) => {
-            fullResponse += res;
-            setMessages(prev => {
-                // Create a copy of the array without the last message
-                const newMessages = prev.slice(0, -1);
+        let currentResponse = '';
+        let currentThought = '';
+        let lastMessageType: ModelSegmentType = undefined;
 
-                // Add a new message with the updated content
-                return [...newMessages, {
-                    id: aiMessageId,
-                    content: fullResponse,
-                    type: MessageType.AI,
-                    isLoading: false
-                }];
-            });
+        // @ts-ignore
+        await window.backend.aiResponseStream((res: ModelResponseChunk) => {
+            if (res.segmentType === "thought" && lastMessageType === undefined) {
+                currentThought += res.text 
+                const newMessage: Message = {
+                    id: uuidv4(),
+                    content: currentThought,
+                    type: "ai",
+                    isLoading: false,
+                    segmentType: "thought"
+                }
+                setMessages(pre => [...pre.slice(0, -1), newMessage])
+            }
+            if (res.segmentType == "thought" && lastMessageType === "thought"){
+                currentThought += res.text 
+                const newMessage: Message = {
+                    id: uuidv4(),
+                    content: currentThought,
+                    type: "ai",
+                    isLoading: false,
+                    segmentType: "thought"
+                }
+                setMessages(pre => [...pre.slice(0, -1), newMessage])
+            }
+            if (res.segmentType === undefined && lastMessageType === undefined) {
+                currentResponse += res.text 
+                const newMessage: Message = {
+                    id: uuidv4(),
+                    content: currentResponse,
+                    type: "ai",
+                    isLoading: false,
+                    segmentType: undefined
+                }
+                setMessages(pre => [...pre.slice(0, -1), newMessage])
+            }
+            if (res.segmentType === undefined && lastMessageType === "thought") {
+                currentResponse += res.text 
+                const newMessage: Message = {
+                    id: uuidv4(),
+                    content: currentResponse,
+                    type: "ai",
+                    isLoading: false,
+                    segmentType: undefined
+                }
+                setMessages(pre => [...pre, newMessage])
+            }
+            lastMessageType = res.segmentType
         });
     };
 
@@ -102,7 +142,7 @@ function App() {
             <div className="w-full max-w-4xl flex justify-center items-center space-x-4 px-4 mb-8">
                 <Button
                     modelLoaded={modelLoaded}
-                    onClick={modelLoaded ? handleEject : openFileSelector}
+                    onClick={modelLoaded ? handleEject : handleModelLoad}
                 />
                 <InputForm onSubmit={handleSubmit} />
             </div>
