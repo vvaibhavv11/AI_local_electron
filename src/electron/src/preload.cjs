@@ -10,7 +10,8 @@ const { contextBridge, ipcRenderer } = require('electron/renderer')
 const api = {
     loadModel: () => ipcRenderer.invoke("givePath"),
     aiResponse: (userPrompt) => ipcRenderer.send("aiResponse", userPrompt),
-    aiResponseStream: (callback) => ipcRenderer.on("aiResponseStream", (_, response) => callback(response))
+    aiResponseStream: (callback) => ipcRenderer.on("aiResponseStream", (_, response) => callback(response)),
+    removeAIResponseStreamListeners: () => ipcRenderer.removeAllListeners("aiResponseStream")
 }
 
 contextBridge.exposeInMainWorld("backend", api)

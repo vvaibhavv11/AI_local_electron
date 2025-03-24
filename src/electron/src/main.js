@@ -36,7 +36,7 @@ app.on("ready", () => {
     if (isDev()) {
         mainWindow.loadURL("http://localhost:5500");
     } else {
-        Menu.setApplicationMenu(null);
+        // Menu.setApplicationMenu(null);
         mainWindow.loadFile(path.join(app.getAppPath(), "/dist-react/index.html"));
     }
 });
