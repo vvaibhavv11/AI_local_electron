@@ -23,9 +23,6 @@
         "maxNodeModuleJsDepth": 1,
         "noImplicitAny": true,
         "strictNullChecks": true,
-        "types": [
-            "node"
-        ],
         "lib": [
             "ESNext",
             "DOM"

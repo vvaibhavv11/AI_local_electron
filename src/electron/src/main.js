@@ -24,6 +24,10 @@ app.on("ready", () => {
         return done;
     });
 
+    /**
+     * Handles the 'eject' IPC event by ejecting the model and returning the result.
+     * @returns {Promise<boolean>} A promise that resolves to a boolean indicating if the model was ejected successfully.
+     */
     ipcMain.handle('eject', async () => {
         const done = await ejectModel();
         return done

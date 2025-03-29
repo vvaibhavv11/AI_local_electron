@@ -32,6 +32,9 @@ export const loadModel = async () => {
     return true;
 }
 
+/**
+* @returns {Promise<boolean>}
+*/
 export const ejectModel = async () => {
     state.model = undefined;
     state.context = undefined;
