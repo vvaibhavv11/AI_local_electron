@@ -2,7 +2,7 @@ import { app, BrowserWindow, ipcMain, Menu } from 'electron';
 import path from 'path';
 import { isDev } from './util.js';
 import { getPreloadPath } from './pathResolver.js';
-import { loadModel, response } from './llamacpp/model.js';
+import { ejectModel, loadModel, response } from './llamacpp/model.js';
 
 /**
  * Creates the main application window and sets up IPC handlers when the app is ready.
@@ -23,6 +23,11 @@ app.on("ready", () => {
         const done = await loadModel();
         return done;
     });
+
+    ipcMain.handle('eject', async () => {
+        const done = await ejectModel();
+        return done
+    })
 
     /**
      * Handles the 'aiResponse' IPC event by generating a response based on the provided prompt.

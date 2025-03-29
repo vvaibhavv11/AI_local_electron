@@ -32,6 +32,13 @@ export const loadModel = async () => {
     return true;
 }
 
+export const ejectModel = async () => {
+    state.model = undefined;
+    state.context = undefined;
+    state.session = undefined;
+    return true
+}
+
 /**
 * @param {BrowserWindow} window
 * @param {string} userPrompt

@@ -58,13 +58,14 @@ const handleSubmit = async (content: string, messages: Message[], setMessages: D
     let currentResponse = '';
     let currentThought = '';
     let lastMessageType: ModelSegmentType = undefined;
+    const thoughtUuid = uuidv4()
 
     // @ts-ignore
     await window.backend.aiResponseStream((res: ModelResponseChunk) => {
         if (res.segmentType === "thought") {
             currentThought += res.text
             const newMessage: Message = {
-                id: uuidv4(),
+                id: thoughtUuid,
                 content: currentThought,
                 type: "ai",
                 isLoading: false,
@@ -119,8 +120,12 @@ function App() {
         }
     };
 
-    const handleEject = () => {
-        setModelLoaded(false);
+    const handleEject = async () => {
+        // @ts-ignore
+        const done = await window.backend.ejectModel();
+        if (done) {
+            setModelLoaded(false);
+        }
     };
 
     return (

@@ -1,44 +1,44 @@
 {
-  "compilerOptions": {
-    "target": "ES2020",
-    "module": "ESNext",
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "strict": true,
-    "outDir": "./dist-electron",
-    "rootDir": "./",
-    "allowJs": true,
-    "checkJs": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "baseUrl": ".",
-    "paths": {
-      "*": [
-        "./*"
-      ]
+    "compilerOptions": {
+        "target": "ES2020",
+        "module": "ESNext",
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "strict": true,
+        "outDir": "./dist-electron",
+        "rootDir": "./",
+        "allowJs": true,
+        "checkJs": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "resolveJsonModule": true,
+        "baseUrl": ".",
+        "paths": {
+            "*": [
+                "./*"
+            ]
+        },
+        "jsx": "preserve",
+        "noEmit": true,
+        "maxNodeModuleJsDepth": 1,
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "types": [
+            "node"
+        ],
+        "lib": [
+            "ESNext",
+            "DOM"
+        ]
     },
-    "jsx": "preserve",
-    "noEmit": true,
-    "maxNodeModuleJsDepth": 1,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "types": [
-      "node"
+    "include": [
+        "./src/**/*.js",
+        "./src/**/*.jsx",
+        "./src/**/*.ts",
+        "./src/**/*.tsx"
     ],
-    "lib": [
-      "ESNext",
-      "DOM"
+    "exclude": [
+        "node_modules",
+        "dist-electron"
     ]
-  },
-  "include": [
-    "./src/**/*.js",
-    "./src/**/*.jsx",
-    "./src/**/*.ts",
-    "./src/**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist-electron"
-  ]
 }
