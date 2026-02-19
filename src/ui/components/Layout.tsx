@@ -4,7 +4,13 @@ type LayoutProps = {
 
 export const Layout = ({ children }: LayoutProps) => {
     return (
-        <div className="min-h-screen bg-[#1A0A0A] flex flex-col items-center">
+        <div
+            className="h-screen w-screen flex overflow-hidden dot-grid"
+            style={{
+                background: 'var(--bg)',
+            }}
+        >
+            <div className="scanline"></div>
             {children}
         </div>
     );

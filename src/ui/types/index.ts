@@ -28,6 +28,16 @@ export type Message = {
     segmentType: ModelSegmentType;
 }
 
+export type Conversation = {
+    id: string;
+    title: string;
+    messages: Message[];
+    createdAt: number;
+    updatedAt: number;
+}
+
+export type ToastType = 'success' | 'error' | 'info';
+
 export type aiResponse = {
     event: 'streaming',
     data: {

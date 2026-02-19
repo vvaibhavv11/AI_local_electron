@@ -1,2 +1,288 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
 @import "tailwindcss";
 
+/* ===== BRUTALIST CYBERPUNK DESIGN SYSTEM ===== */
+:root {
+  /* Grayscale / Dark */
+  --c-black: #050505;
+  --c-bg: #0a0a0f;
+  --c-surface-1: #121216;
+  --c-surface-2: #1a1a20;
+  --c-surface-3: #222228;
+
+  /* Neon Accents */
+  --c-cyan: #00f0ff;
+  --c-cyan-dim: rgba(0, 240, 255, 0.2);
+  --c-cyan-glow: rgba(0, 240, 255, 0.4);
+
+  --c-magenta: #ff003c;
+  --c-magenta-dim: rgba(255, 0, 60, 0.2);
+
+  --c-amber: #ffb000;
+  --c-amber-dim: rgba(255, 176, 0, 0.2);
+
+  /* Typography */
+  --c-text-main: #e0e0e0;
+  --c-text-muted: #888899;
+
+  /* Semantics */
+  --bg: var(--c-bg);
+  --border: var(--c-surface-3);
+  --border-strong: var(--c-cyan-dim);
+}
+
+/* ===== Base ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Chakra Petch', sans-serif;
+  background: var(--bg);
+  color: var(--c-text-main);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography Helpers */
+.font-display {
+  font-family: 'Orbitron', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.font-mono {
+  font-family: 'Space Mono', monospace;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--c-black);
+  border-left: 1px solid var(--c-surface-3);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--c-cyan-dim);
+  border: 1px solid var(--c-cyan);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--c-cyan);
+}
+
+/* Selection */
+::selection {
+  background: var(--c-magenta);
+  color: var(--c-black);
+}
+
+/* Cyberpunk Grid Background */
+.dot-grid {
+  position: relative;
+  background-image:
+    linear-gradient(var(--c-surface-2) 1px, transparent 1px),
+    linear-gradient(90deg, var(--c-surface-2) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: center center;
+}
+
+.dot-grid::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 0%, var(--bg) 80%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.dot-grid>* {
+  position: relative;
+  z-index: 1;
+}
+
+/* Glitch / Glow Effects */
+.cyber-glow {
+  text-shadow: 0 0 5px var(--c-cyan), 0 0 10px var(--c-cyan);
+}
+
+.cyber-glow-amber {
+  text-shadow: 0 0 5px var(--c-amber), 0 0 10px var(--c-amber);
+}
+
+.cyber-panel {
+  background: var(--c-surface-1);
+  border: 1px solid var(--c-surface-3);
+  position: relative;
+}
+
+.cyber-panel::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 10px;
+  height: 10px;
+  border-top: 2px solid var(--c-cyan);
+  border-left: 2px solid var(--c-cyan);
+  pointer-events: none;
+}
+
+.cyber-panel::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 10px;
+  height: 10px;
+  border-bottom: 2px solid var(--c-cyan);
+  border-right: 2px solid var(--c-cyan);
+  pointer-events: none;
+}
+
+.cyber-button {
+  background: transparent;
+  color: var(--c-cyan);
+  border: 1px solid var(--c-cyan);
+  text-transform: uppercase;
+  font-family: 'Orbitron', sans-serif;
+  letter-spacing: 2px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.cyber-button:hover {
+  background: var(--c-cyan-dim);
+  box-shadow: 0 0 10px var(--c-cyan-glow);
+  text-shadow: 0 0 5px var(--c-cyan);
+}
+
+.cyber-button:active {
+  background: var(--c-cyan);
+  color: var(--c-black);
+}
+
+/* Form inputs */
+textarea {
+  field-sizing: content;
+  background: var(--c-black);
+  border: 1px solid var(--c-surface-3);
+  color: var(--c-text-main);
+  font-family: 'Space Mono', monospace;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: var(--c-cyan);
+  box-shadow: inset 0 0 10px var(--c-cyan-dim);
+}
+
+textarea::placeholder {
+  color: var(--c-surface-3);
+  font-family: 'Space Mono', monospace;
+}
+
+/* Animations */
+@keyframes cyber-glitch {
+  0% {
+    clip-path: inset(10% 0 80% 0);
+  }
+
+  20% {
+    clip-path: inset(80% 0 10% 0);
+  }
+
+  40% {
+    clip-path: inset(40% 0 50% 0);
+  }
+
+  60% {
+    clip-path: inset(90% 0 5% 0);
+  }
+
+  80% {
+    clip-path: inset(20% 0 60% 0);
+  }
+
+  100% {
+    clip-path: inset(50% 0 30% 0);
+  }
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+.scanline {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--c-cyan-dim);
+  opacity: 0.5;
+  animation: scanline 6s linear infinite;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+@keyframes enter-glitch {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+    filter: blur(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+    filter: blur(0);
+  }
+}
+
+.anim-enter {
+  animation: enter-glitch 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.anim-enter-delay-1 {
+  animation-delay: 0.1s;
+}
+
+.anim-enter-delay-2 {
+  animation-delay: 0.2s;
+}
+
+.anim-enter-delay-3 {
+  animation-delay: 0.3s;
+}
+
+/* Status Indicators */
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 0;
+  background: var(--c-amber);
+  box-shadow: 0 0 8px var(--c-amber);
+}
+
+.status-dot.active {
+  background: var(--c-cyan);
+  box-shadow: 0 0 8px var(--c-cyan);
+}

@@ -1,57 +1,89 @@
-import React, { useState } from "react";
-import { SendHorizonalIcon, Paperclip } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import { ArrowUp } from "lucide-react";
 
 type InputFormProps = {
     onSubmit: (content: string) => void;
+    modelLoaded: boolean;
+    disabled?: boolean;
 }
 
-export const InputForm = ({ onSubmit }: InputFormProps) => {
+export const InputForm = ({ onSubmit, modelLoaded, disabled }: InputFormProps) => {
     const [inputValue, setInputValue] = useState<string>("");
-    const [attachment, setAttachment] = useState<File | null>(null);
+    const [focused, setFocused] = useState(false);
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    useEffect(() => {
+        const textarea = textareaRef.current;
+        if (textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = `${Math.min(textarea.scrollHeight, 180)}px`;
+        }
+    }, [inputValue]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!inputValue.trim()) return;
+        if (!inputValue.trim() || !modelLoaded || disabled) return;
         onSubmit(inputValue.trim());
         setInputValue("");
-        setAttachment(null);
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            setAttachment(file);
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSubmit(e as unknown as React.FormEvent);
         }
     };
 
+    const canSend = inputValue.trim().length > 0 && modelLoaded && !disabled;
+
     return (
-        <form onSubmit={handleSubmit} className="relative flex-1 max-w-2xl">
-            <input
-                type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Ask me anything..."
-                className="w-full bg-[#2A1515] text-[#D4A6A6] rounded-full py-4 pl-6 pr-24 focus:outline-none focus:ring-2 focus:ring-[#D4A6A6] focus:ring-opacity-50 placeholder:text-[#D4A6A6] placeholder:opacity-50"
-            />
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                <label className="cursor-pointer text-[#D4A6A6] hover:text-white">
-                    <input
-                        type="file"
-                        onChange={handleFileChange}
-                        className="hidden"
-                        accept="image/*,.pdf,.doc,.docx,.txt"
+        <div className="flex-shrink-0 w-full flex justify-center px-6 pb-8 pt-4">
+            <form onSubmit={handleSubmit} className="relative w-full max-w-3xl">
+                <div
+                    className={`cyber-panel transition-all duration-200 ${focused ? 'shadow-[0_0_15px_var(--c-cyan-dim)]' : ''}`}
+                    style={{
+                        background: 'var(--c-surface-1)',
+                        borderColor: focused ? 'var(--c-cyan)' : 'var(--border)',
+                    }}
+                >
+                    <textarea
+                        ref={textareaRef}
+                        value={inputValue}
+                        onChange={e => setInputValue(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        onFocus={() => setFocused(true)}
+                        onBlur={() => setFocused(false)}
+                        placeholder={modelLoaded ? "AWAITING_INPUT..." : "CORE.OFFLINE"}
+                        disabled={!modelLoaded || disabled}
+                        rows={1}
+                        className="w-full bg-transparent resize-none py-3.5 pl-4 pr-14 text-[13px] leading-relaxed focus:outline-none disabled:opacity-30 disabled:cursor-not-allowed font-mono"
+                        style={{ color: 'var(--c-text-main)', minHeight: '48px', maxHeight: '180px' }}
                     />
-                    <Paperclip className="w-5 h-5" />
-                </label>
-                <button type="submit" className="text-[#D4A6A6] hover:text-white">
-                    <SendHorizonalIcon className="w-6 h-6" />
-                </button>
-            </div>
-            {attachment && (
-                <div className="absolute left-6 -top-8 text-sm text-[#D4A6A6]">
-                    Attached: {attachment.name}
+                    <button
+                        type="submit"
+                        disabled={!canSend}
+                        className="absolute right-2.5 bottom-2.5 p-2 transition-all duration-200 disabled:opacity-15 disabled:cursor-not-allowed hover:cursor-pointer border"
+                        style={{
+                            background: canSend ? 'var(--c-cyan-dim)' : 'transparent',
+                            color: canSend ? 'var(--c-cyan)' : 'var(--c-surface-3)',
+                            borderColor: canSend ? 'var(--c-cyan)' : 'transparent',
+                            boxShadow: canSend ? '0 0 10px var(--c-cyan-dim)' : 'none',
+                        }}
+                        onMouseEnter={e => { if (canSend) { e.currentTarget.style.background = 'var(--c-cyan)'; e.currentTarget.style.color = 'var(--c-black)'; } }}
+                        onMouseLeave={e => { if (canSend) { e.currentTarget.style.background = 'var(--c-cyan-dim)'; e.currentTarget.style.color = 'var(--c-cyan)'; } }}
+                    >
+                        <ArrowUp size={16} strokeWidth={2.5} />
+                    </button>
                 </div>
-            )}
-        </form>
+                <div className="flex justify-between mt-2 px-1">
+                    <p className="font-mono text-[9px] uppercase tracking-widest" style={{ color: 'var(--c-text-muted)' }}>
+                        SECURE_CHANNEL // LOCAL_ENCLAVE
+                    </p>
+                    <p className="font-mono text-[9px] uppercase tracking-widest" style={{ color: 'var(--c-cyan-dim)' }}>
+                        NO_DATA_EXFILTRATION
+                    </p>
+                </div>
+            </form>
+        </div>
     );
 };

@@ -1,15 +1,40 @@
 type ButtonProps = {
-    modelLoaded: boolean;
-    onClick: () => void;
+    children: React.ReactNode;
+    onClick?: () => void;
+    variant?: 'primary' | 'secondary' | 'danger';
+    disabled?: boolean;
+    className?: string;
 }
 
-export const Button = ({ modelLoaded, onClick }: ButtonProps) => {
+const variantStyles = {
+    primary: {
+        background: 'var(--accent-gradient)',
+        color: 'white',
+        border: 'none',
+    },
+    secondary: {
+        background: 'var(--bg-surface)',
+        color: 'var(--text-secondary)',
+        border: '1px solid var(--border-color)',
+    },
+    danger: {
+        background: 'rgba(231, 76, 60, 0.15)',
+        color: 'var(--error)',
+        border: '1px solid rgba(231, 76, 60, 0.3)',
+    },
+};
+
+export const Button = ({ children, onClick, variant = 'secondary', disabled, className = '' }: ButtonProps) => {
+    const styles = variantStyles[variant];
+
     return (
         <button
             onClick={onClick}
-            className="rounded-full bg-[#2A1515] text-[#D4A6A6] py-4 px-6 focus:outline-none focus:ring-2 focus:ring-[#D4A6A6] focus:ring-opacity-50 hover:text-white"
+            disabled={disabled}
+            className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed hover:cursor-pointer ${className}`}
+            style={styles}
         >
-            {modelLoaded ? 'eject' : 'load model'}
+            {children}
         </button>
     );
 };

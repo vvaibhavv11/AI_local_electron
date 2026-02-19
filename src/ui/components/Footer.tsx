@@ -1,7 +1,8 @@
 export const Footer = () => {
     return (
-        <div className="pb-4 text-[#D4A6A6] text-sm opacity-50">
-            © 2024 LOCALAI
+        <div className="text-center py-2 font-mono text-[9px] uppercase tracking-widest flex-shrink-0"
+            style={{ color: 'var(--stone-700)', borderTop: '1px solid var(--border)' }}>
+            AI Local · Powered by llama.cpp
         </div>
     );
 };

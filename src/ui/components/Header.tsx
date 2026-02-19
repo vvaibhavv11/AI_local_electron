@@ -1,12 +1,23 @@
-import { Triangle } from "lucide-react";
+type HeaderProps = {
+    modelLoaded: boolean;
+}
 
-export const Header = () => {
+export const Header = ({ modelLoaded }: HeaderProps) => {
     return (
-        <div className="mt-20 mb-16 text-center">
-            <Triangle className="w-16 h-16 mx-auto mb-4 text-[#D4A6A6]" />
-            <h1 className="text-[#D4A6A6] text-2xl tracking-wider">
-                ASK LOACLAI ANYTHING
-            </h1>
+        <div
+            className="flex items-center justify-between px-5 py-3 flex-shrink-0"
+            style={{ borderBottom: '1px solid var(--border)', background: 'var(--c-surface-1)' }}
+        >
+            <h2 className="font-display text-[12px] tracking-widest cyber-glow-amber" style={{ color: 'var(--c-amber)' }}>
+                LOCAL_NODE_INTERFACE
+            </h2>
+            <div className="flex items-center gap-2">
+                <div className={`status-dot ${modelLoaded ? 'active' : ''}`} />
+                <span className="font-mono text-[10px] uppercase tracking-widest"
+                    style={{ color: modelLoaded ? 'var(--c-cyan)' : 'var(--c-surface-3)' }}>
+                    {modelLoaded ? 'SYS.READY' : 'SYS.OFFLINE'}
+                </span>
+            </div>
         </div>
     );
 };
