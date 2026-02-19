@@ -79,6 +79,11 @@
     "patchedDependencies": {
       "chalk@5.4.1": "patches/chalk@5.4.1.patch",
       "universal-github-app-jwt": "patches/universal-github-app-jwt.patch"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "electron",
+      "esbuild",
+      "node-llama-cpp"
+    ]
   }
 }

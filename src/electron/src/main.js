@@ -9,9 +9,11 @@ import { ejectModel, loadModel, response } from './llamacpp/model.js';
  */
 app.on("ready", () => {
     const mainWindow = new BrowserWindow({
+        height: 720,
+        width: 1280,
         webPreferences: {
             preload: getPreloadPath(),
-            contextIsolation: true
+            contextIsolation: true,
         }
     });
 
